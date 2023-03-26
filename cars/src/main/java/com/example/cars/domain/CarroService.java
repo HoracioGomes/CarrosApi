@@ -27,30 +27,30 @@ public class CarroService {
         return rep.findByTipo(tipo).stream().map(CarroDto::create).collect(Collectors.toList());
     }
 
-    public Carro saveCarro(Carro carro) {
-        return rep.save(carro);
+    public CarroDto saveCarro(Carro carro) {
+        return CarroDto.create(rep.save(carro));
     }
 
-    public Carro deleteById(Long id) {
+    public CarroDto deleteById(Long id) {
         Optional<Carro> carroOpt = rep.findById(id);
         if (carroOpt.isPresent()) {
             rep.deleteById(id);
-            return carroOpt.get();
+            return CarroDto.create(carroOpt.get());
         } else {
             throw new RuntimeException("O objeto nao existe!");
         }
     }
 
-    public Carro updateCarro(Carro carro, Long id) {
+    public CarroDto updateCarro(Carro carro, Long id) {
 
         Optional<Carro> carroOpt = rep.findById(id);
         if (carroOpt.isPresent()) {
             Carro carroToUpdate = carroOpt.get();
             carroToUpdate.setNome(carro.getNome());
             carroToUpdate.setTipo(carro.getTipo());
-            return rep.save(carroToUpdate);
+            return CarroDto.create(rep.save(carroToUpdate));
         } else {
-            throw new RuntimeException("Não foi possível atualizar o registro!");
+            throw new RuntimeException("O objeto nao existe!");
         }
 
     }
