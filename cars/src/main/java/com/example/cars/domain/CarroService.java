@@ -16,15 +16,15 @@ public class CarroService {
     private CarroRepository rep;
 
     public List<CarroDto> getCarros() {
-        return rep.findAll().stream().map(CarroDto::new).collect(Collectors.toList());
+        return rep.findAll().stream().map(CarroDto::create).collect(Collectors.toList());
     }
 
     public Optional<CarroDto> getById(Long id) {
-        return rep.findById(id).map(CarroDto::new);
+        return rep.findById(id).map(CarroDto::create);
     }
 
     public List<CarroDto> getByTipo(String tipo) {
-        return rep.findByTipo(tipo).stream().map(CarroDto::new).collect(Collectors.toList());
+        return rep.findByTipo(tipo).stream().map(CarroDto::create).collect(Collectors.toList());
     }
 
     public Carro saveCarro(Carro carro) {
