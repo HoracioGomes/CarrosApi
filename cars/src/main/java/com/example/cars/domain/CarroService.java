@@ -8,22 +8,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CarroService {
     @Autowired
     private CarroRepository rep;
 
-    public Iterable<Carro> getCarros() {
-        return rep.findAll();
+    public List<CarroDto> getCarros() {
+        return rep.findAll().stream().map(CarroDto::new).collect(Collectors.toList());
     }
 
-    public Optional<Carro> getById(Long id) {
-        return rep.findById(id);
+    public Optional<CarroDto> getById(Long id) {
+        return rep.findById(id).map(CarroDto::new);
     }
 
-    public List<Carro> getByTipo(String tipo) {
-        return rep.findByTipo(tipo);
+    public List<CarroDto> getByTipo(String tipo) {
+        return rep.findByTipo(tipo).stream().map(CarroDto::new).collect(Collectors.toList());
     }
 
     public Carro saveCarro(Carro carro) {
@@ -52,13 +53,5 @@ public class CarroService {
             throw new RuntimeException("Não foi possível atualizar o registro!");
         }
 
-    }
-
-    public List<Carro> getCarrosfake() {
-        List<Carro> carros = new ArrayList<>();
-        carros.add(new Carro(1L, "Fusca", "classico"));
-        carros.add(new Carro(2L, "Chevet", "classico"));
-        carros.add(new Carro(3L, "Gol", "classico"));
-        return carros;
     }
 }
