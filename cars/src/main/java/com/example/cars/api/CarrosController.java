@@ -4,7 +4,6 @@ import com.example.cars.domain.Carro;
 import com.example.cars.domain.CarroDto;
 import com.example.cars.domain.CarroService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,10 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/carros")
@@ -36,11 +31,8 @@ public class CarrosController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CarroDto> getById(@PathVariable("id") Long id) {
-
-        Optional<CarroDto> carro = service.getById(id);
-
-        return carro.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        CarroDto carro = service.getById(id);
+        return ResponseEntity.ok(carro);
 
         // if ternário
 //      return   service.getById(id).isPresent() ?
@@ -61,13 +53,9 @@ public class CarrosController {
 
     @PostMapping
     public ResponseEntity saveCarro(@RequestBody Carro carro) {
-        try {
-            CarroDto carroSalvo = service.saveCarro(carro);
-            URI location = getUri(carroSalvo.getId());
-            return ResponseEntity.created(location).build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        CarroDto carroSalvo = service.saveCarro(carro);
+        URI location = getUri(carroSalvo.getId());
+        return ResponseEntity.created(location).build();
     }
 
     private URI getUri(Long id) {
@@ -77,20 +65,12 @@ public class CarrosController {
 
     @PutMapping("/id/{id}")
     public ResponseEntity updateCarro(@RequestBody Carro carro, @PathVariable("id") Long id) {
-        try {
-            return ResponseEntity.ok(service.updateCarro(carro, id));
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(service.updateCarro(carro, id));
     }
 
     @DeleteMapping("/id/{id}")
     public ResponseEntity deleteCarro(@PathVariable("id") Long id) {
-        try {
-            CarroDto deleted = service.deleteById(id);
-            return ResponseEntity.ok(deleted);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        service.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 }

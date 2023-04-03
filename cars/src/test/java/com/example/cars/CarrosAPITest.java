@@ -24,38 +24,38 @@ public class CarrosAPITest {
     @Autowired
     protected TestRestTemplate rest;
 
-    private ResponseEntity<CarroDto> getCarro(String url){
+    private ResponseEntity<CarroDto> getCarro(String url) {
         return rest.getForEntity(url, CarroDto.class);
     }
 
-    private ResponseEntity<List<CarroDto>> getCarros(String url){
+    private ResponseEntity<List<CarroDto>> getCarros(String url) {
         return rest.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
         });
     }
 
     @Test
-    public void testList(){
+    public void testList() {
         List<CarroDto> lista = getCarros("/api/v1/carros").getBody();
         assertNotNull(lista);
         assertEquals(lista.size(), 30);
     }
 
     @Test
-    public void testTipoDesconhecido(){
+    public void testTipoDesconhecido() {
         assertEquals(HttpStatus.NO_CONTENT, getCarros("/api/v1/carros/tipo/unknown").getStatusCode());
     }
 
     @Test
-    public void testNotFound(){
+    public void testNotFound() {
         assertEquals(HttpStatus.NOT_FOUND, getCarro("/api/v1/carro/999").getStatusCode());
     }
 
     @Test
-    public void testSave(){
+    public void testSave() {
         Carro carro = new Carro();
         carro.setNome("nomeTeste");
         carro.setTipo("testeTipo");
         carro.setDescricao("testeDescricao");
-        assertEquals(HttpStatus.CREATED, rest.postForEntity("/api/v1/carros",carro, null).getStatusCode());
+        assertEquals(HttpStatus.CREATED, rest.postForEntity("/api/v1/carros", carro, null).getStatusCode());
     }
 }

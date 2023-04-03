@@ -1,20 +1,24 @@
 package com.example.cars;
 
+import com.example.cars.api.exception.MyObjectNotFoundException;
 import com.example.cars.domain.Carro;
 import com.example.cars.domain.CarroDto;
 import com.example.cars.domain.CarroService;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
 class CarroServiceTest {
 
@@ -37,21 +41,24 @@ class CarroServiceTest {
         Long id = carroDto.getId();
         assertNotNull(id);
 
-        Optional<CarroDto> carroCriado = service.getById(id);
-        assertTrue(carroCriado.isPresent());
+        CarroDto carroCriado = service.getById(id);
+        assertTrue(carroCriado != null);
 
-       assertEquals("nomeTeste1", carroCriado.get().getNome());
-       assertEquals("tipoTeste1", carroCriado.get().getTipo());
+        assertEquals("nomeTeste1", carroCriado.getNome());
+        assertEquals("tipoTeste1", carroCriado.getTipo());
 
-       service.deleteById(id);
-
-       assertFalse(service.getById(id).isPresent());
+        service.deleteById(id);
+        try {
+            assertNull(service.getById(id));
+            fail("O objeto não foi excluído!");
+        } catch (MyObjectNotFoundException exception) {
+        }
     }
 
     @Test
     void test2() {
         List<CarroDto> carroDtos = service.getCarros();
-        assertEquals(30, carroDtos.size() );
+        assertEquals(30, carroDtos.size());
     }
 
 }
