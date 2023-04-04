@@ -11,6 +11,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.io.Serializable;
+import java.nio.file.AccessDeniedException;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
@@ -26,9 +27,14 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity PermissionDenied(Exception exception) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ExceptionError("Acesso Negado!"));
+    }
+
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        return new ResponseEntity<>(new ExceptionError("Operação não permitida!"), HttpStatus.METHOD_NOT_ALLOWED);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ExceptionError("Operação não permitida!"));
     }
 
     class ExceptionError implements Serializable {
